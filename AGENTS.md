@@ -28,7 +28,7 @@ Flutter ERP móvil para panadería — offline-first con Drift/SQLite + Provider
 5. Verificar: `build_runner` → `flutter analyze` → `flutter test`
 
 ## Reglas importantes
-- Siempre que se pida crear un plan para una posible mejora, que se cree en la carpeta de `docs\Mejoras` con el prefijo `posible_mejora-[nombre-de-la-mejora]`
+- Siempre que se pida crear un plan para una mejora, que se cree en la carpeta de `docs\Mejoras` con el prefijo `mejora-[nombre-de-la-mejora]`
 
 ## Drift
 - `lib/data/database/app_database.g.dart` es GENERADO — no editar

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../../data/database/app_database.dart';
 import '../../../data/repositories/expense_repository.dart';
+import '../dashboard/dashboard_controller.dart';
 
 class ExpenseFilter {
   final DateTime start;
@@ -15,10 +16,13 @@ class ExpenseFilter {
 
 class ExpenseController extends ChangeNotifier {
   final ExpenseRepository _expenseRepository;
+  final DashboardController? _dashboardController;
 
   ExpenseController({
     required ExpenseRepository expenseRepository,
-  }) : _expenseRepository = expenseRepository;
+    DashboardController? dashboardController,
+  })  : _expenseRepository = expenseRepository,
+        _dashboardController = dashboardController;
 
   bool _isLoading = false;
   List<Expense> _expenses = const [];
@@ -63,6 +67,7 @@ class ExpenseController extends ChangeNotifier {
 
     _message = 'Egreso registrado correctamente';
     await loadExpenses();
+    await _dashboardController?.loadDashboard();
   }
 
   Future<void> updateExpense({
@@ -82,6 +87,7 @@ class ExpenseController extends ChangeNotifier {
 
     _message = 'Egreso actualizado correctamente';
     await loadExpenses();
+    await _dashboardController?.loadDashboard();
   }
 
   Future<void> deleteExpense({required int id}) async {
@@ -90,6 +96,7 @@ class ExpenseController extends ChangeNotifier {
         ? 'Egreso eliminado correctamente'
         : 'No se pudo eliminar el egreso';
     await loadExpenses();
+    await _dashboardController?.loadDashboard();
   }
 
   Future<void> applyFilter({

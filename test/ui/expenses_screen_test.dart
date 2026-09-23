@@ -185,4 +185,45 @@ void main() {
     expect(find.text('Antiguo'), findsNothing);
     expect(find.text('No hay egresos registrados'), findsOneWidget);
   });
+
+  testWidgets('updates dashboard metrics when an expense is deleted', (
+    WidgetTester tester,
+  ) async {
+    final database = AppDatabase.forTesting(NativeDatabase.memory());
+    final expenseRepository = ExpenseRepository(database);
+
+    addTearDown(database.close);
+    await initializeSpanishLocaleForTests();
+
+    await expenseRepository.createExpense(
+      category: 'Mantenimiento',
+      amount: 45.0,
+      createdAt: DateTime.now(),
+    );
+
+    await tester.pumpWidget(App(database: database));
+    await tester.pump();
+    await tester.pumpAndSettle();
+
+    // Verify initial dashboard shows $45.00 expenses
+    expect(find.text('\$45.00'), findsWidgets);
+
+    // Go to Egresos tab and delete the expense
+    await tester.tap(find.text('Egresos'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.delete_outline).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Eliminar'));
+    await tester.pump();
+    await tester.pumpAndSettle();
+
+    // Go back to Dashboard tab
+    await tester.tap(find.text('Dashboard'));
+    await tester.pumpAndSettle();
+
+    // Dashboard should now show $0.00 expenses
+    expect(find.text('\$0.00'), findsWidgets);
+    expect(find.text('\$45.00'), findsNothing);
+  });
 }

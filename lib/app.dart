@@ -48,11 +48,6 @@ class App extends StatelessWidget {
             homeController: context.read<HomeController>(),
           )..loadProducts(),
         ),
-        ChangeNotifierProvider<ExpenseController>(
-          create: (context) => ExpenseController(
-            expenseRepository: context.read<ExpenseRepository>(),
-          )..loadExpenses(),
-        ),
         ChangeNotifierProvider<DashboardController>(
           create: (context) => DashboardController(
             salesRepository: context.read<SalesRepository>(),
@@ -60,6 +55,12 @@ class App extends StatelessWidget {
             productRepository: context.read<ProductRepository>(),
             stockRepository: context.read<StockRepository>(),
           )..loadDashboard(),
+        ),
+        ChangeNotifierProvider<ExpenseController>(
+          create: (context) => ExpenseController(
+            expenseRepository: context.read<ExpenseRepository>(),
+            dashboardController: context.read<DashboardController>(),
+          )..loadExpenses(),
         ),
       ],
       child: MaterialApp(
