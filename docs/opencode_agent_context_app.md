@@ -22,6 +22,7 @@ Lo siguiente es lo ya implementado en las fases:
 - Mejora en Excel exportado: generar XLSX con colores, bordes y secciones visuales.
 - mejora implementada: eliminacion definitiva de egresos desde interfaz con confirmacion, soporte en controlador/repositorio y pruebas.
 - mejora implementada: actualizacion automatica del dashboard al crear, editar o eliminar egresos.
+- mejora implementada: busqueda de productos por nombre en tiempo real e insensible a mayusculas/minusculas en modulo de productos.
 
 ---
 

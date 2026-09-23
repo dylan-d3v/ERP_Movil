@@ -5,8 +5,27 @@ import '../../../data/database/app_database.dart';
 import '../dashboard/dashboard_screen.dart';
 import 'home_controller.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late final TextEditingController _searchController;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +34,34 @@ class HomeScreen extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: const Text('Panaderia ERP'),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: Center(
+                  child: SizedBox(
+                    width: 190,
+                    height: 38,
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: controller.setSearchQuery,
+                      decoration: InputDecoration(
+                        hintText: 'Buscar...',
+                        hintStyle: const TextStyle(fontSize: 13),
+                        prefixIcon: const Icon(Icons.search, size: 18),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0,
+                          horizontal: 8,
+                        ),
+                        isDense: true,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () => _showProductDialog(context),
@@ -32,16 +79,25 @@ class HomeScreen extends StatelessWidget {
                             _EmptyState(),
                           ],
                         )
-                      : ListView.separated(
-                          padding: const EdgeInsets.all(16),
-                          itemCount: controller.products.length,
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(height: 12),
-                          itemBuilder: (context, index) {
-                            final item = controller.products[index];
-                            return _ProductCard(item: item);
-                          },
-                        ),
+                      : controller.filteredProducts.isEmpty
+                          ? ListView(
+                              children: [
+                                const SizedBox(height: 120),
+                                _NoSearchResultsState(
+                                  query: controller.searchQuery,
+                                ),
+                              ],
+                            )
+                          : ListView.separated(
+                              padding: const EdgeInsets.all(16),
+                              itemCount: controller.filteredProducts.length,
+                              separatorBuilder: (_, __) =>
+                                  const SizedBox(height: 12),
+                              itemBuilder: (context, index) {
+                                final item = controller.filteredProducts[index];
+                                return _ProductCard(item: item);
+                              },
+                            ),
                 ),
         );
       },
@@ -70,6 +126,38 @@ class _EmptyState extends StatelessWidget {
             Text(
               'Agrega tu primer producto para empezar a controlar inventario.',
               textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NoSearchResultsState extends StatelessWidget {
+  final String query;
+
+  const _NoSearchResultsState({required this.query});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          children: [
+            const Icon(Icons.search_off, size: 72, color: Colors.grey),
+            const SizedBox(height: 16),
+            const Text(
+              'No se encontraron productos',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'No se encontro ningun producto que coincida con "$query".',
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.grey),
             ),
           ],
         ),

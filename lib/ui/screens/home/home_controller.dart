@@ -26,9 +26,26 @@ class HomeController extends ChangeNotifier {
 
   bool _isLoading = false;
   List<ProductStockViewData> _products = const [];
+  String _searchQuery = '';
 
   bool get isLoading => _isLoading;
   List<ProductStockViewData> get products => _products;
+  String get searchQuery => _searchQuery;
+
+  List<ProductStockViewData> get filteredProducts {
+    if (_searchQuery.trim().isEmpty) {
+      return _products;
+    }
+    final query = _searchQuery.trim().toLowerCase();
+    return _products
+        .where((item) => item.product.name.toLowerCase().contains(query))
+        .toList();
+  }
+
+  void setSearchQuery(String query) {
+    _searchQuery = query;
+    notifyListeners();
+  }
 
   Future<void> loadProducts() async {
     _isLoading = true;
