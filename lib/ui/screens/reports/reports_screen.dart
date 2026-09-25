@@ -8,6 +8,8 @@ import '../../../services/excel_exporter.dart';
 import '../../../services/pdf_exporter.dart';
 import 'reports_controller.dart';
 
+import 'widgets/report_charts.dart';
+
 class ReportsScreen extends StatelessWidget {
   const ReportsScreen({super.key});
 
@@ -32,7 +34,7 @@ class ReportsScreen extends StatelessWidget {
                 Expanded(
                   child: controller.isLoading
                       ? const Center(child: CircularProgressIndicator())
-                      : controller.sales.isEmpty
+                      : (controller.sales.isEmpty && controller.totalExpenses == 0)
                           ? const _EmptyState()
                           : _ReportContent(controller: controller),
                 ),
@@ -194,19 +196,42 @@ class _ReportContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _SummaryCards(controller: controller),
-        const Divider(height: 1),
         Expanded(
-          child: ListView.builder(
+          child: ListView(
             padding: const EdgeInsets.all(16),
-            itemCount: controller.sales.length,
-            itemBuilder: (context, index) {
-              final saleWithItems = controller.sales[index];
-              return _SaleCard(
-                saleWithItems: saleWithItems,
-                productNames: controller.productNames,
-              );
-            },
+            children: [
+              _SummaryCards(controller: controller),
+              const SizedBox(height: 16),
+              Text(
+                'Registros de Venta',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 12),
+              if (controller.sales.isEmpty)
+                const Card(
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text('No hay ventas registradas en este período.'),
+                  ),
+                )
+              else
+                ...controller.sales.map(
+                  (saleWithItems) => _SaleCard(
+                    saleWithItems: saleWithItems,
+                    productNames: controller.productNames,
+                  ),
+                ),
+              const SizedBox(height: 24),
+              const Divider(),
+              const SizedBox(height: 16),
+              Text(
+                'Gráficos del Período',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 12),
+              ReportChartsSection(controller: controller),
+              const SizedBox(height: 16),
+            ],
           ),
         ),
         _ExportButtons(controller: controller),
