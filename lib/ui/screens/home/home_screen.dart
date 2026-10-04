@@ -64,6 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           floatingActionButton: FloatingActionButton.extended(
+            heroTag: 'home_fab',
             onPressed: () => _showProductDialog(context),
             icon: const Icon(Icons.add),
             label: const Text('Nuevo producto'),

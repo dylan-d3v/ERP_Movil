@@ -19,6 +19,7 @@ class SalesScreen extends StatelessWidget {
           ),
           floatingActionButton: hasProducts
               ? FloatingActionButton.extended(
+                  heroTag: 'sales_fab',
                   onPressed: controller.addLine,
                   icon: const Icon(Icons.add),
                   label: const Text('Agregar linea'),

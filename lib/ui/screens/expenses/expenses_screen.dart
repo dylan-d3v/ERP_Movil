@@ -29,6 +29,7 @@ class ExpensesScreen extends StatelessWidget {
             ],
           ),
           floatingActionButton: FloatingActionButton.extended(
+            heroTag: 'expenses_fab',
             onPressed: () => _showExpenseDialog(context),
             icon: const Icon(Icons.add),
             label: const Text('Nuevo egreso'),
